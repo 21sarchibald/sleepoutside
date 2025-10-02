@@ -3,7 +3,11 @@ import { findProductById } from "./productData.mjs";
 
 function addProductToCart(product) {
   // Retrieve existing cart and set it equal to cartItems
-  let cartItems = getLocalStorage("so-cart");
+  let cartItems;
+  if ( getLocalStorage("so-cart"))
+    {cartItems = getLocalStorage("so-cart")}
+    
+  else {cartItems = [];}
   // Add new product to existing cart
   cartItems.push(product);
   // Store the updated cart in local storage
