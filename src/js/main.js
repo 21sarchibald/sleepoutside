@@ -1,4 +1,5 @@
 import { getLocalStorage } from "./utils.mjs";
+import productList from "./productList.mjs";
 
 // Function to update cart counter
 function updateCartCounter() {
@@ -20,3 +21,5 @@ window.addEventListener("storage", (e) => {
     updateCartCounter();
   }
 });
+
+productList(".product-list", "tents");
