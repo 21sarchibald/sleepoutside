@@ -57,8 +57,6 @@ export async function renderWithTemplate(
   if (clear) {
     parentElement.innerHTML = "";
   }
-  console.log("list value:", list);
-  console.log("list type:", typeof list);
 
   const htmlString = await templateFn(data);
   parentElement.insertAdjacentHTML(position, htmlString);
@@ -67,7 +65,7 @@ export async function renderWithTemplate(
   }
 }
 
-function loadHeaderFooter () {
+export function loadHeaderFooter () {
   const headerTemplateFn = loadTemplate("/partials/header.html");
   const footerTemplateFn = loadTemplate("/partials/footer.html");
   let header = document.querySelector("#main-header");

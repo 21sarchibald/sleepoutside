@@ -22,4 +22,6 @@ window.addEventListener("storage", (e) => {
   }
 });
 
+loadHeaderFooter();
+
 productList(".product-list", "tents");
