@@ -1,4 +1,4 @@
-import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import { animateElement, getLocalStorage, setLocalStorage } from "./utils.mjs";
 import { findProductById } from "./productData.mjs";
 
 // Store the current product data
@@ -35,6 +35,9 @@ async function addToCartHandler(e) {
     button.textContent = originalText;
     button.style.backgroundColor = "";
   }, 2000);
+
+  // Animate backpack cart svg
+  animateElement("#cart-backpack", "animateBackpack");
   
   // Update cart counter on main page if it exists
   const cartCounter = document.querySelector(".cart-counter");

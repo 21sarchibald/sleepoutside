@@ -220,6 +220,14 @@ button {
   margin: 0;
 }
 
+#cart-backpack {
+  transition: transform .5s ease;
+}
+
+.animateBackpack {
+  transform: rotate(-90deg);
+}
+
 @media screen and (min-width: 500px) {
   body {
     max-width: 1080px;

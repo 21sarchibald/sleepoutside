@@ -85,3 +85,10 @@ function loadTemplate(path) {
         }
     };
 } 
+
+export function animateElement(element, cssSelector) {
+  document.querySelector(element).classList.add(cssSelector);
+  setTimeout(() => {
+    document.querySelector(element).classList.remove(cssSelector);
+  }, 1000)
+}
