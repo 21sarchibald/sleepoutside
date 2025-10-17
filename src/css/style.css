@@ -170,6 +170,28 @@ button {
   width: 100%;
 }
 
+#discount-div {
+  font-size: .9rem;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: red;
+
+}
+
+#productDiscountPrice {
+  text-decoration: line-through;
+  margin-bottom: 0px;
+  display: inline;
+}
+
+#productDiscountPercentage {
+  display: inline;
+}
+
+#productFinalPrice {
+  margin-top: 0px;
+}
+
 /* Start cart list card styles */
 .cart-card {
   display: grid;
