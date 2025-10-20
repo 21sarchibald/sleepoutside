@@ -158,6 +158,16 @@ button {
 .card__name {
   font-size: 1em;
 }
+
+.product-card__discount {
+  font-size: .75rem;
+  color: red;
+  display: inline;
+}
+
+#product-card__original-price {
+  text-decoration: line-through;
+}
 /* End product list card */
 
 .product-detail {

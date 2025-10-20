@@ -18,6 +18,11 @@ function productCardTemplate(product) {
     />
     <h3 class="card__brand">${product.Brand.Name}</h3>
     <h2 class="card__name">${product.NameWithoutBrand}</h2>
-    <p class="product-card__price">$${product.FinalPrice}</p></a>
+    <div class="product-card__price">
+    <p>$${product.FinalPrice}</p>
+    <p class="product-card__discount" id="product-card__original-price">$${product.SuggestedRetailPrice}</p>
+    <p class="product-card__discount">(${Math.round(((product.FinalPrice / product.SuggestedRetailPrice) - 1 ) * -100)}% Off)</p>
+    </div>
+    </a>
   </li>`
 } 

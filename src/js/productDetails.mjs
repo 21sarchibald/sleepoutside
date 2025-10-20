@@ -62,7 +62,7 @@ function renderProductDetails(product) {
   productImage.alt = product.Name;
   
   document.getElementById("productDiscountPrice").textContent = `$${product.SuggestedRetailPrice}`;
-  document.getElementById("productDiscountPercentage").textContent = `(${Math.round((product.FinalPrice / product.SuggestedRetailPrice) * 100)}% Off)`;
+  document.getElementById("productDiscountPercentage").textContent = `(${Math.round(((product.FinalPrice / product.SuggestedRetailPrice) - 1 ) * -100)}% Off)`;
   document.getElementById("productFinalPrice").textContent = `$${product.FinalPrice}`;
   document.getElementById("productColorName").textContent = product.Colors[0].ColorName;
   document.getElementById("productDescriptionHtmlSimple").innerHTML = product.DescriptionHtmlSimple;
