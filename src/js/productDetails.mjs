@@ -56,6 +56,7 @@ function renderProductDetails(product) {
   // Fill in product details
   document.getElementById("productName").textContent = product.Brand.Name;
   document.getElementById("productNameWithoutBrand").textContent = product.NameWithoutBrand;
+  document.getElementById("discount-flag-span").textContent = `$${(Math.round(product.SuggestedRetailPrice - product.FinalPrice) * 100) / 100} OFF`;
   
   const productImage = document.getElementById("productImage");
   productImage.src = product.Image;
