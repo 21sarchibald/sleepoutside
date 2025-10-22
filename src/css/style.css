@@ -176,6 +176,19 @@ button {
   margin: auto;
 }
 
+#discount-flag {
+  text-align: right;
+  padding-bottom: 40px;
+  padding-top: 20px;
+}
+
+#discount-flag span {
+  padding: 20px;
+  color: white;
+  background-color: var(--secondary-color);
+  border-radius: 20% 0% 0% 20%
+}
+
 .product-detail img {
   width: 100%;
 }
