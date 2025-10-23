@@ -1,5 +1,4 @@
 import { getLocalStorage, loadHeaderFooter } from "./utils.mjs";
-import productList from "./productList.mjs";
 
 // Function to update cart counter
 function updateCartCounter() {
@@ -23,5 +22,3 @@ window.addEventListener("storage", (e) => {
 });
 
 loadHeaderFooter();
-
-productList(".product-list", "tents");
