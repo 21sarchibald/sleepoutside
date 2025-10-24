@@ -76,6 +76,31 @@ export function loadHeaderFooter () {
   
 }
 
+// Global cart counter update function that can be called from anywhere
+export function updateCartCounter() {
+  const cartItems = getLocalStorage("so-cart") || [];
+  const cartCounter = document.querySelector(".cart-counter");
+  
+  if (cartCounter) {
+    // Count total items including quantities
+    const totalItems = cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+    cartCounter.textContent = totalItems;
+    cartCounter.style.display = totalItems > 0 ? "block" : "none";
+    console.log("Cart counter updated:", totalItems); // Debug log
+  } else {
+    // If cart counter not found, try again after a short delay
+    setTimeout(updateCartCounter, 100);
+  }
+}
+
+// Function to ensure cart counter is updated multiple times
+export function ensureCartCounterUpdated() {
+  updateCartCounter();
+  setTimeout(updateCartCounter, 100);
+  setTimeout(updateCartCounter, 300);
+  setTimeout(updateCartCounter, 500);
+}
+
 function loadTemplate(path) {
     return async function () {
         const res = await fetch(path);

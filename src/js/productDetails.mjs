@@ -1,4 +1,4 @@
-import { animateElement, getLocalStorage, setLocalStorage } from "./utils.mjs";
+import { animateElement, getLocalStorage, setLocalStorage, ensureCartCounterUpdated } from "./utils.mjs";
 import { findProductById } from "./productData.mjs";
 
 // Store the current product data
@@ -13,8 +13,22 @@ function addProductToCart(product) {
   } else {
     cartItems = [];
   }
-  // Add new product to existing cart
-  cartItems.push(product);
+  
+  // Check if product already exists in cart
+  const existingItem = cartItems.find(item => item.Id === product.Id);
+  
+  if (existingItem) {
+    // If item exists, increment quantity
+    if (!existingItem.quantity) {
+      existingItem.quantity = 1;
+    }
+    existingItem.quantity += 1;
+  } else {
+    // If item doesn't exist, add it with quantity 1
+    product.quantity = 1;
+    cartItems.push(product);
+  }
+  
   // Store the updated cart in local storage
   setLocalStorage("so-cart", cartItems);
 }
@@ -39,13 +53,8 @@ async function addToCartHandler(e) {
   // Animate backpack cart svg
   animateElement("#cart-backpack", "animateBackpack");
   
-  // Update cart counter on main page if it exists
-  const cartCounter = document.querySelector(".cart-counter");
-  if (cartCounter) {
-    const cartItems = getLocalStorage("so-cart") || [];
-    cartCounter.textContent = cartItems.length;
-    cartCounter.style.display = cartItems.length > 0 ? "block" : "none";
-  }
+  // Update cart counter
+  ensureCartCounterUpdated();
 }
 
 // Render product details in HTML
@@ -59,7 +68,7 @@ function renderProductDetails(product) {
   document.getElementById("discount-flag-span").textContent = `$${(Math.round(product.SuggestedRetailPrice - product.FinalPrice) * 100) / 100} OFF`;
   
   const productImage = document.getElementById("productImage");
-  productImage.src = product.Image;
+  productImage.src = product.Images.PrimaryLarge;
   productImage.alt = product.Name;
   
   document.getElementById("productDiscountPrice").textContent = `$${product.SuggestedRetailPrice}`;
