@@ -7,11 +7,22 @@ export function qs(selector, parent = document) {
 
 // retrieve data from localstorage
 export function getLocalStorage(key) {
-  return JSON.parse(localStorage.getItem(key));
+  try {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : null;
+  } catch (error) {
+    console.error("Error getting from localStorage:", error);
+    return null;
+  }
 }
 // save data to local storage
 export function setLocalStorage(key, data) {
-  localStorage.setItem(key, JSON.stringify(data));
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+    console.log("Successfully saved to localStorage:", key, data);
+  } catch (error) {
+    console.error("Error saving to localStorage:", error);
+  }
 }
 // set a listener for both touchend and click
 export function setClick(selector, callback) {
