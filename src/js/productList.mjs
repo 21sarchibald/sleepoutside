@@ -1,4 +1,4 @@
-import { getData } from "./productData.mjs";
+import { getProductsByCategory } from "./externalServices.mjs";
 import { renderListWithTemplate, getLocalStorage, setLocalStorage, ensureCartCounterUpdated, animateElement } from "./utils.mjs";
 
 let allProducts = [];
@@ -6,7 +6,7 @@ let currentSort = 'name-asc';
 
 export default async function productList(selector, category) {
     let htmlElement = document.querySelector(selector);
-    allProducts = await getData(category);
+    allProducts = await getProductsByCategory(category);
     
     // Load saved sort preference
     const savedSort = getLocalStorage("product-list-sort");
