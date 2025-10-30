@@ -1,5 +1,5 @@
 import { animateElement, getLocalStorage, setLocalStorage, ensureCartCounterUpdated } from "./utils.mjs";
-import { findProductById } from "./productData.mjs";
+import { findProductById } from "./externalServices.mjs";
 
 // Store the current product data
 let currentProduct = null;

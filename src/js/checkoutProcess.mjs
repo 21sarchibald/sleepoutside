@@ -1,6 +1,30 @@
 import { getLocalStorage } from "./utils.mjs";
 import { checkout } from "./externalServices.mjs";
 
+function formDataToJSON(formElement) {
+  const formData = new FormData(formElement),
+    convertedJSON = {};
+
+  formData.forEach(function (value, key) {
+    convertedJSON[key] = value;
+  });
+
+  return convertedJSON;
+}
+
+function packageItems(items) {
+  const simplifiedItems = items.map((item) => {
+    console.log(item);
+    return {
+      id: item.Id,
+      price: item.FinalPrice,
+      name: item.Name,
+      quantity: 1,
+    };
+  });
+  return simplifiedItems;
+}
+
 const checkoutProcess = {
   key: "",
   outputSelector: "",
@@ -26,7 +50,7 @@ const checkoutProcess = {
     // calculate the total of all the items in the cart
     const amounts = this.list.map((item) => item.FinalPrice);
     this.itemTotal = amounts.reduce((sum, item) => sum + item);
-    summaryElement.innerText = "$" + this.itemTotal;
+    summaryElement.innerText = "$" + (this.itemTotal).toFixed(2);
   },
   calculateOrdertotal: function () {
     this.shipping = 10 + (this.list.length - 1) * 2;
