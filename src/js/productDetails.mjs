@@ -88,11 +88,6 @@ export default async function productDetails(productId) {
     // Get product data using findProductById
     currentProduct = await findProductById(productId);
     
-    if (!currentProduct) {
-      console.error("Product not found");
-      return;
-    }
-    
     // Render the product details
     renderProductDetails(currentProduct);
     
@@ -102,6 +97,10 @@ export default async function productDetails(productId) {
       addToCartButton.addEventListener("click", addToCartHandler);
     }
   } catch (error) {
+    document.querySelector("main").innerHTML = 
+    `<h2>Product Not Found</h2>
+    <p>Sorry, but that product is not part of our inventory or is no longer available.</p>`;
+    document.querySelector(".product-detail").classList.add("hidden");
     console.error("Error loading product details:", error);
   }
 }
