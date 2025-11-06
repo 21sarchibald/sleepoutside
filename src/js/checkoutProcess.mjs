@@ -1,4 +1,4 @@
-import { getLocalStorage } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage, removeAllAlerts, alertMessage } from "./utils.mjs";
 import { checkout } from "./externalServices.mjs";
 
 function formDataToJSON(formElement) {
@@ -84,8 +84,29 @@ const checkoutProcess = {
     try {
       const res = await checkout(json);
       console.log(res);
+      setLocalStorage("so-cart", []);
+      location.assign("/checkout/success.html");
     } catch (err) {
-      console.log(err);
+      removeAllAlerts();
+      // Handle error message structure - could be object, array, or string
+      if (err.name === 'servicesError' && err.message) {
+        if (typeof err.message === 'string') {
+          alertMessage(err.message);
+        } else if (Array.isArray(err.message)) {
+          err.message.forEach(msg => alertMessage(msg));
+        } else if (typeof err.message === 'object') {
+          // Iterate over object properties
+          Object.values(err.message).forEach(msg => {
+            if (typeof msg === 'string') {
+              alertMessage(msg);
+            } else if (Array.isArray(msg)) {
+              msg.forEach(m => alertMessage(m));
+            }
+          });
+        }
+      } else {
+        alertMessage('An error occurred processing your order. Please try again.');
+      }
     }
   },
 };
