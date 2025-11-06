@@ -128,3 +128,56 @@ export function animateElement(element, cssSelector) {
     document.querySelector(element).classList.remove(cssSelector);
   }, 1000)
 }
+
+// Remove all existing alerts from the page
+export function removeAllAlerts() {
+  const main = document.querySelector('main');
+  if (main) {
+    const alerts = main.querySelectorAll('.alert');
+    alerts.forEach(alert => main.removeChild(alert));
+  }
+}
+
+// Display an alert message at the top of the main element
+export function alertMessage(message, scroll = true) {
+  // Get the main element
+  const main = document.querySelector('main');
+  if (!main) {
+    console.error('Main element not found');
+    return;
+  }
+
+  // Create alert element
+  const alert = document.createElement('div');
+  alert.classList.add('alert');
+  
+  // Create close button
+  const closeBtn = document.createElement('span');
+  closeBtn.innerHTML = '&times;';
+  closeBtn.classList.add('alert-close');
+  
+  // Create message element
+  const messageElement = document.createElement('span');
+  messageElement.textContent = message;
+  messageElement.classList.add('alert-message');
+  
+  // Assemble alert
+  alert.appendChild(messageElement);
+  alert.appendChild(closeBtn);
+  
+  // Add click listener to remove alert when X is clicked
+  closeBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (main.contains(alert)) {
+      main.removeChild(alert);
+    }
+  });
+  
+  // Insert alert at the top of main
+  main.prepend(alert);
+  
+  // Scroll to top if scroll is true
+  if (scroll) {
+    window.scrollTo(0, 0);
+  }
+}

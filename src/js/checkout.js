@@ -23,6 +23,10 @@ document
 
 document.forms["checkout"].addEventListener("submit", (e) => {
   e.preventDefault();
-  // e.target would contain our form in this case
-  checkoutProcess.checkout(e.target);
+  const myForm = e.target;
+  const chk_status = myForm.checkValidity();
+  myForm.reportValidity();
+  if (chk_status) {
+    checkoutProcess.checkout(myForm);
+  }
 });

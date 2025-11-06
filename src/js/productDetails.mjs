@@ -1,4 +1,4 @@
-import { animateElement, getLocalStorage, setLocalStorage, ensureCartCounterUpdated } from "./utils.mjs";
+import { animateElement, getLocalStorage, setLocalStorage, ensureCartCounterUpdated, alertMessage } from "./utils.mjs";
 import { findProductById } from "./externalServices.mjs";
 
 // Store the current product data
@@ -38,17 +38,8 @@ async function addToCartHandler(e) {
   const product = await findProductById(e.target.dataset.id);
   addProductToCart(product);
   
-  // Show feedback to user
-  const button = e.target;
-  const originalText = button.textContent;
-  button.textContent = "Added to Cart!";
-  button.style.backgroundColor = "#28a745";
-  
-  // Reset button after 2 seconds
-  setTimeout(() => {
-    button.textContent = originalText;
-    button.style.backgroundColor = "";
-  }, 2000);
+  // Show feedback to user using alert message
+  alertMessage(`${product.NameWithoutBrand} added to cart!`, false);
 
   // Animate backpack cart svg
   animateElement("#cart-backpack", "animateBackpack");
