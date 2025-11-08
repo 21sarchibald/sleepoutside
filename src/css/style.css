@@ -367,6 +367,50 @@ button {
   width: 100%;
 }
 
+
+#productImage.carousel {
+  display: grid;
+  grid-template-columns: 1fr 10fr 1fr;
+  grid-template-rows: 1fr;
+}
+
+#imageCarousel {
+  grid-column: 1/5;
+  grid-row: 1/2;
+  width: 100%;
+}
+
+.carouselImage {
+  display: none;
+}
+
+.carouselImage.carousel-show {
+  display: block;
+}
+
+.carouselButton {
+  width: 1rem;
+  height: 100%;
+  text-align: center;
+  opacity: 0;
+  padding: 1rem;
+  padding-right: 2rem;
+}
+
+.carouselButton:hover {
+  opacity: .5;
+}
+
+#carouselBack {
+  grid-row: 1/2;
+  grid-column: 1/2;
+}
+
+#carouselNext {
+  grid-row: 1/2;
+  grid-column: 3/4;
+}
+
 #discount-div {
   font-size: .9rem;
   margin-top: 10px;
