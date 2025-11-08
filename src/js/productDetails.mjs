@@ -59,8 +59,60 @@ function renderProductDetails(product) {
   document.getElementById("discount-flag-span").textContent = `$${(Math.round(product.SuggestedRetailPrice - product.FinalPrice) * 100) / 100} OFF`;
   
   const productImage = document.getElementById("productImage");
-  productImage.src = product.Images.PrimaryLarge;
-  productImage.alt = product.Name;
+
+  // Create image list for the image carousel and add the original image to the list.
+  let imagesList = [];
+  imagesList.push(product.Images.PrimaryLarge);
+
+  // Access extra images and add them to the image list if there are any.
+  const extraImages = product.Images.ExtraImages;
+
+  if (extraImages !== null) {
+    extraImages.forEach(image => imagesList.push(image.Src));
+    console.log(imagesList);
+
+    productImage.innerHTML = buildProductImageCarousel(imagesList);
+    productImage.classList.add("carousel");
+
+    let carouselImages = document.querySelectorAll("#imageCarousel .carouselImage");
+
+    console.log(carouselImages)
+
+    carouselImages[0].classList.add("carousel-show");
+
+    let currentIndex = 0;
+    document.querySelector("#carouselNext").addEventListener("click", () => {
+      carouselImages[currentIndex].classList.remove("carousel-show");
+      if (currentIndex == carouselImages.length - 1) {
+        currentIndex = 0;
+        carouselImages[currentIndex].classList.add("carousel-show");
+      }
+      else {
+        currentIndex += 1;
+        carouselImages[currentIndex].classList.add("carousel-show");
+      }
+      
+    })
+    document.querySelector("#carouselBack").addEventListener("click", () => {
+      carouselImages[currentIndex].classList.remove("carousel-show");
+      if (currentIndex == 0) {
+        currentIndex = carouselImages.length - 1;
+        carouselImages[currentIndex].classList.add("carousel-show");
+      }
+      else {
+        currentIndex -= 1;
+        carouselImages[currentIndex].classList.add("carousel-show");
+      }
+
+    })
+   
+
+  }
+  else {
+    productImage.innerHTML = `<img src="${product.Images.PrimaryLarge}" alt="${product.Name}" />`
+    // productImage.src = product.Images.PrimaryLarge;
+    // productImage.alt = product.Name;
+  }
   
   document.getElementById("productDiscountPrice").textContent = `$${product.SuggestedRetailPrice}`;
   document.getElementById("productDiscountPercentage").textContent = `(${Math.round(((product.FinalPrice / product.SuggestedRetailPrice) - 1 ) * -100)}% Off)`;
@@ -71,6 +123,19 @@ function renderProductDetails(product) {
   // Set the product ID on the add to cart button
   const addToCartButton = document.getElementById("addToCart");
   addToCartButton.dataset.id = product.Id;
+}
+
+function buildProductImageCarousel(imagesList) {
+  let carouselHTML = `<div id="imageCarousel">`;
+  imagesList.forEach(image => {
+    carouselHTML += `<img class="carouselImage" src="${image}" alt="Alternate View">`
+    }
+  )
+  carouselHTML += `</div>
+  <button class="carouselButton" id="carouselBack"><</button>
+  <button class="carouselButton" id="carouselNext">></button>
+  `;
+  return carouselHTML;
 }
 
 // Main function to set up product details page
