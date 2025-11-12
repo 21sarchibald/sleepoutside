@@ -97,7 +97,7 @@ const checkoutProcess = {
         } else if (typeof err.message === 'object') {
           // Iterate over object properties
           Object.values(err.message).forEach(msg => {
-            if (typeof msg === 'string') {
+            if (typeof msg === "string") {
               alertMessage(msg);
             } else if (Array.isArray(msg)) {
               msg.forEach(m => alertMessage(m));
@@ -105,7 +105,7 @@ const checkoutProcess = {
           });
         }
       } else {
-        alertMessage('An error occurred processing your order. Please try again.');
+        alertMessage("An error occurred processing your order. Please try again.");
       }
     }
   },
