@@ -1,4 +1,5 @@
 import { loadHeaderFooter, ensureCartCounterUpdated, getParam } from "./utils.mjs";
+import { login } from "./auth.mjs";
 
 // Listen for storage changes to update cart counter across tabs
 window.addEventListener("storage", (e) => {
@@ -15,9 +16,10 @@ setTimeout(ensureCartCounterUpdated, 200);
 // get URL parameter
 const redirect = getParam("redirect");
 
-document.querySelector("#loginButton").addEventListener("click", () => {
-    const email = document.querySelector("#email");
-    const password = document.querySelector("#password");
+document.querySelector("#loginButton").addEventListener("click", async (e) => {
+  e.preventDefault();
+    const email = document.querySelector("#email").value;
+    const password = document.querySelector("#password").value;
 
-    login({ email, password }, redirect)
+    await login({ email, password }, redirect)
 })
