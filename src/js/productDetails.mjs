@@ -31,6 +31,31 @@ function addProductToCart(product) {
   
   // Store the updated cart in local storage
   setLocalStorage("so-cart", cartItems);
+  
+  // Dispatch custom event for same-tab updates
+  window.dispatchEvent(new Event("cartUpdated"));
+}
+
+// Check if product is in cart
+function isProductInCart(productId) {
+  const cartItems = getLocalStorage("so-cart") || [];
+  return cartItems.some(item => item.Id === productId);
+}
+
+// Update add to cart button state based on cart status
+function updateAddToCartButton(productId) {
+  const addToCartButton = document.getElementById("addToCart");
+  if (!addToCartButton) return;
+  
+  if (isProductInCart(productId)) {
+    addToCartButton.textContent = "Added in Cart";
+    addToCartButton.disabled = true;
+    addToCartButton.classList.add("added-to-cart");
+  } else {
+    addToCartButton.textContent = "Add to Cart";
+    addToCartButton.disabled = false;
+    addToCartButton.classList.remove("added-to-cart");
+  }
 }
 
 // Add to cart button event handler
@@ -46,6 +71,9 @@ async function addToCartHandler(e) {
   
   // Update cart counter
   ensureCartCounterUpdated();
+  
+  // Update button state
+  updateAddToCartButton(product.Id);
 }
 
 // Render product details in HTML
@@ -123,6 +151,9 @@ function renderProductDetails(product) {
   // Set the product ID on the add to cart button
   const addToCartButton = document.getElementById("addToCart");
   addToCartButton.dataset.id = product.Id;
+  
+  // Update button state based on cart status
+  updateAddToCartButton(product.Id);
 }
 
 function buildProductImageCarousel(imagesList) {
@@ -152,6 +183,20 @@ export default async function productDetails(productId) {
     if (addToCartButton) {
       addToCartButton.addEventListener("click", addToCartHandler);
     }
+    
+    // Listen for storage changes to update button state when cart changes
+    window.addEventListener("storage", (e) => {
+      if (e.key === "so-cart" && currentProduct) {
+        updateAddToCartButton(currentProduct.Id);
+      }
+    });
+    
+    // Also listen for custom storage events (for same-tab updates)
+    window.addEventListener("cartUpdated", () => {
+      if (currentProduct) {
+        updateAddToCartButton(currentProduct.Id);
+      }
+    });
   } catch (error) {
     document.querySelector("main").innerHTML = 
     `<h2>Product Not Found</h2>

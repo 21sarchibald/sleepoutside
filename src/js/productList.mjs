@@ -24,6 +24,27 @@ export default async function productList(selector, category) {
     
     // Add event listeners for product card buttons
     setupProductCardListeners();
+    
+    // Listen for storage changes to update button states when cart changes
+    window.addEventListener("storage", (e) => {
+        if (e.key === "so-cart") {
+            // Re-render product list to update button states
+            const sortedProducts = sortProducts(allProducts, currentSort);
+            renderListWithTemplate(productCardTemplate, htmlElement, sortedProducts);
+            setupProductCardListeners();
+        }
+    });
+    
+    // Also listen for custom storage events (for same-tab updates)
+    window.addEventListener("cartUpdated", () => {
+        // Update all add to cart buttons
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            const productId = button.dataset.productId;
+            if (productId) {
+                updateProductCardButton(button, productId);
+            }
+        });
+    });
 }
 
 function setupSortListener() {
@@ -36,6 +57,8 @@ function setupSortListener() {
             const sortedProducts = sortProducts(allProducts, currentSort);
             const htmlElement = document.querySelector('.product-list');
             renderListWithTemplate(productCardTemplate, htmlElement, sortedProducts);
+            // Re-setup listeners after re-rendering
+            setupProductCardListeners();
         });
     }
 }
@@ -57,7 +80,18 @@ function sortProducts(products, sortType) {
     }
 }
 
+// Check if product is in cart
+function isProductInCart(productId) {
+    const cartItems = getLocalStorage("so-cart") || [];
+    return cartItems.some(item => item.Id === productId);
+}
+
 function productCardTemplate(product) {
+    const inCart = isProductInCart(product.Id);
+    const buttonText = inCart ? "Added in Cart" : "Add to Cart";
+    const buttonClass = inCart ? "add-to-cart-btn added-to-cart" : "add-to-cart-btn";
+    const buttonDisabled = inCart ? "disabled" : "";
+    
     return `<li class="product-card">
     <a href="../product_pages/index.html?product=${product.Id}" class="product-card__link">
     <img
@@ -74,7 +108,7 @@ function productCardTemplate(product) {
     </a>
     <div class="product-card__actions">
       <button class="quick-view-btn" data-product-id="${product.Id}">Quick View</button>
-      <button class="add-to-cart-btn" data-product-id="${product.Id}">Add to Cart</button>
+      <button class="${buttonClass}" data-product-id="${product.Id}" ${buttonDisabled}>${buttonText}</button>
     </div>
   </li>`
 }
@@ -96,11 +130,15 @@ function setupProductCardListeners() {
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
+            // Don't allow clicking if already in cart
+            if (e.target.disabled || e.target.classList.contains('added-to-cart')) {
+                return;
+            }
             const productId = e.target.dataset.productId;
             const product = allProducts.find(p => p.Id === productId);
             if (product) {
                 addProductToCart(product);
-                showAddToCartFeedback(e.target);
+                updateProductCardButton(e.target, productId);
             }
         });
     });
@@ -140,11 +178,27 @@ function addProductToCart(product) {
     setLocalStorage("so-cart", cartItems);
     console.log("Cart saved to localStorage:", cartItems);
     
+    // Dispatch custom event for same-tab updates
+    window.dispatchEvent(new Event("cartUpdated"));
+    
     // Update cart counter
     ensureCartCounterUpdated();
     
     // Animate backpack cart svg
     animateElement("#cart-backpack", "animateBackpack");
+}
+
+// Update product card button state
+function updateProductCardButton(button, productId) {
+    if (isProductInCart(productId)) {
+        button.textContent = "Added in Cart";
+        button.disabled = true;
+        button.classList.add("added-to-cart");
+    } else {
+        button.textContent = "Add to Cart";
+        button.disabled = false;
+        button.classList.remove("added-to-cart");
+    }
 }
 
 function showAddToCartFeedback(button) {
@@ -185,7 +239,7 @@ function showQuickViewModal(product) {
             </div>
             <div class="modal-footer">
                 <button class="modal-view-details" onclick="window.location.href='../product_pages/index.html?product=${product.Id}'">View Full Details</button>
-                <button class="modal-add-to-cart" data-product-id="${product.Id}">Add to Cart</button>
+                <button class="modal-add-to-cart ${isProductInCart(product.Id) ? 'added-to-cart' : ''}" data-product-id="${product.Id}" ${isProductInCart(product.Id) ? 'disabled' : ''}>${isProductInCart(product.Id) ? 'Added in Cart' : 'Add to Cart'}</button>
             </div>
         </div>
     `;
@@ -195,9 +249,14 @@ function showQuickViewModal(product) {
     
     // Add event listeners
     modalOverlay.querySelector('.modal-close').addEventListener('click', closeModal);
-    modalOverlay.querySelector('.modal-add-to-cart').addEventListener('click', (e) => {
+    const modalAddToCartBtn = modalOverlay.querySelector('.modal-add-to-cart');
+    modalAddToCartBtn.addEventListener('click', (e) => {
+        // Don't allow clicking if already in cart
+        if (e.target.disabled || e.target.classList.contains('added-to-cart')) {
+            return;
+        }
         addProductToCart(product);
-        showAddToCartFeedback(e.target);
+        updateProductCardButton(e.target, product.Id);
     });
     
     // Close on overlay click

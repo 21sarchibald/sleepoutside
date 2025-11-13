@@ -105,6 +105,9 @@ function removeFromCart(productId) {
   
   setLocalStorage("so-cart", cartItems);
   
+  // Dispatch custom event for same-tab updates
+  window.dispatchEvent(new Event("cartUpdated"));
+  
   // Re-render the cart
   const outputEl = document.querySelector(".product-list");
   renderListWithTemplate(cartItemTemplate, outputEl, cartItems);
@@ -138,6 +141,9 @@ function updateQuantity(productId, change) {
     
     setLocalStorage("so-cart", cartItems);
     
+    // Dispatch custom event for same-tab updates
+    window.dispatchEvent(new Event("cartUpdated"));
+    
     // Re-render the cart
     const outputEl = document.querySelector(".product-list");
     renderListWithTemplate(cartItemTemplate, outputEl, cartItems);
@@ -167,6 +173,9 @@ function setQuantity(productId, newQuantity) {
     }
     
     setLocalStorage("so-cart", cartItems);
+    
+    // Dispatch custom event for same-tab updates
+    window.dispatchEvent(new Event("cartUpdated"));
     
     // Re-render the cart
     const outputEl = document.querySelector(".product-list");
